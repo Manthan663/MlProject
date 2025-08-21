@@ -31,16 +31,57 @@ class ModelTrainer:
             
             models = {
               "Linear Regression": LinearRegression(),
-               "Lasso": Lasso(),
-               "Ridge": Ridge(),
-               "K-Neighbors Regressor": KNeighborsRegressor(),
-               "Decision Tree": DecisionTreeRegressor(),
-               "Random Forest Regressor": RandomForestRegressor(),
+               "K-NeighborsRegressor": KNeighborsRegressor(),
+               "DecisionTreeRegressor": DecisionTreeRegressor(),
+               "RandomForestRegressor": RandomForestRegressor(),
                "XGBRegressor": XGBRegressor(),
-               "AdaBoost Regressor": AdaBoostRegressor()
+               "AdaBoostRegressor": AdaBoostRegressor()
+            }
+            params={
+              "DecisionTreeRegressor":{
+                'criterion':['friedman_mse', 'squared_error', 'absolute_error'],
+                'splitter':['best', 'random'],
+                'max_features':['sqrt', 'log2']
+              },
+              "RandomForestRegressor":{
+                'criterion':['friedman_mse', 'squared_error', 'absolute_error'],
+                'n_estimators':[10,32,64,50, 100],
+                'max_features':['sqrt', 'log2'],
+                'min_samples_split':[2, 5, 10]
+              },
+              "Gradient Boosting":{
+                'loss':['ls', 'lad', 'huber', 'quantile'],
+                'learning_rate':[0.01, 0.1, 0.2],
+                'n_estimators':[100, 200, 300],
+                'max_depth':[3, 5, 7],
+                'min_samples_split':[2, 5, 10],
+                'max_features':['sqrt', 'log2']
+              },
+              "K-NeighborsRegressor": {
+                'n_neighbors':[3, 5, 7, 9, 11],
+                'weights':['uniform', 'distance'],
+                'algorithm':['ball_tree', 'kd_tree']
+              },
+              "XGBRegressor": {
+                'n_estimators':[100, 200, 300],
+                'learning_rate':[0.01, 0.1, 0.2],
+                'max_depth':[3, 5, 7],
+                'min_child_weight':[1, 3, 5],
+                'subsample':[0.6, 0.8, 1.0],
+                'colsample_bytree':[0.6, 0.8, 1.0]
+              },
+              'Linear Regression': {},
+              
+              'AdaBoostRegressor': {
+                'n_estimators':[50, 100, 200],
+                'learning_rate':[0.01, 0.1, 0.5],
+                'loss':['linear', 'square', 'exponential']
+              }
+
             }
 
-            model_report = evaluate_model(X_train, y_train, X_test, y_test, models)
+
+            model_report = evaluate_model(X_train, X_test, y_train, y_test, models,param=params)
 
 
             best_model_score = max(sorted(model_report.values()))
